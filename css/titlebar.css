@@ -5,7 +5,7 @@
 /* ====== CSS Variables ====== */
 :root {
  --titlebar-background: #e9eff5;        /* světle modrá‑šedá */
-  --titlebar-text-color: #1f2937;   
+  --titlebar-text-color: #1f2937;
   --nav-button-color: #3a4256;
   --nav-button-hover-bg: #e3eaf3;
   --nav-button-hover-color: #2563eb;
@@ -22,7 +22,7 @@
   --nav-button-hover-bg: #23293a;
   --nav-button-hover-color: #60a5fa;
   --nav-button-disabled-color: #44495a;
-  
+
   --action-button-color: #b6c2d6;
   --action-button-hover-bg: #23293a;
   --action-button-hover-color: #60a5fa;
