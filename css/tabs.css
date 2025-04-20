@@ -1,0 +1,318 @@
+/* ====== CSS Variables pro taby ====== */
+:root {
+  /* Záložky */
+  --tab-background2: #ffffff;            /* čistá bílá */
+  --tab-hover-background: #f2f6fa;       /* velmi světlá modrá */
+  --tab-active-background2: rgba(172, 206, 240, 0.5);     /* světlejší modrá‑šedá */
+  --tab-favicon-background: #f2f6fa;     /* shodně s hover */
+  --tab-favicon-active-background: #c7d3df; /* výraznější aktivní */
+  --tab-title-color: #4b5563;            /* střední šedá */
+  --tab-title-active-color: #1e40af;     /* sytá modrá */
+
+  --tab-close-button-color: #6b7280;     /* neutrální šedá */
+  --tab-close-button-hover-bg: #e2e8f0;   /* jemné podbarvení */
+  --tab-close-button-hover-color: #1e40af;/* modrý akcent */
+}
+
+[data-theme="dark"] {
+  --tab-background2: #1a2233;
+  --tab-hover-background: #23293a;
+  --tab-active-background2: #22304a;
+  --tab-favicon-background: #23293a;
+  --tab-favicon-active-background: #22304a;
+  --tab-title-color: #b6c2d6;
+  --tab-title-active-color: #60a5fa;
+  --tab-close-button-color: #6b7280;
+  --tab-close-button-hover-bg: #23293a;
+  --tab-close-button-hover-color: #60a5fa;
+}
+
+/* ====== Tabs Container ====== */
+#tabs-container {
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 0 1 auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    padding: 0 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+    position: relative;
+    -webkit-app-region: drag;
+    gap: 6px;
+    max-width: calc(100% - 120px);
+    transition: width 0.35s cubic-bezier(0.4,0,0.2,1),
+                height 0.35s cubic-bezier(0.4,0,0.2,1),
+                padding 0.35s cubic-bezier(0.4,0,0.2,1),
+                margin 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+#tabs-container.no-drag { -webkit-app-region: no-drag; }
+#tabs-container.drag-enabled { -webkit-app-region: drag; }
+#tabs-container::-webkit-scrollbar { display: none; }
+
+/* ====== Tab Item ====== */
+.tab-item {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  flex: 1 1 auto;
+  min-width: 72px;
+  max-width: 220px;
+  height: 28px;
+  margin-top: 6px;
+  background-color: var(--tab-background2);
+  backdrop-filter: blur(6.9px);
+  -webkit-backdrop-filter: blur(6.9px);
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: all 0.15s cubic-bezier(0.4,0,0.2,1),
+              width 0.35s cubic-bezier(0.4,0,0.2,1),
+              max-width 0.35s cubic-bezier(0.4,0,0.2,1),
+              min-width 0.35s cubic-bezier(0.4,0,0.2,1),
+              margin 0.35s cubic-bezier(0.4,0,0.2,1),
+              background-color 0.25s;
+  position: relative;
+  -webkit-app-region: no-drag;
+  z-index: 1;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.tab-favicon,
+.tab-title,
+.close-tab-button {
+  -webkit-app-region: no-drag;
+  position: relative;
+  z-index: 1;
+}
+
+.tab-item:hover { background-color: var(--tab-hover-background); }
+.tab-item.tab-drag-over {
+  background-color: rgba(200,220,250,0.7);
+  border-left: 2px solid #4285f4;
+  box-shadow: 0 2px 4px rgba(66,133,244,0.2);
+  transition: all 0.1s;
+}
+.tab-item[draggable="true"]:active { cursor: grabbing; }
+.tab-item[draggable="true"] { cursor: grab; }
+.tab-item.being-dragged {
+  opacity: 0.5;
+  box-shadow: 0 4px 12px rgba(66,133,244,0.15);
+}
+
+.tab-item.active-tab {
+  background-color: var(--tab-active-background2);
+  height: 28px;
+  margin-top: 6px;
+  z-index: 2;
+  border-bottom: none;
+}
+
+.tab-item.active-tab::after { display: none; }
+
+.tab-favicon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  flex-shrink: 0;
+  opacity: 0.9;
+  border-radius: 4px;
+  padding: 2px;
+  background-color: var(--tab-favicon-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-tab .tab-favicon {
+  opacity: 1;
+  background-color: var(--tab-favicon-active-background);
+}
+
+/* Předpokládáme, že uvnitř .tab-favicon je <img> tag */
+.tab-favicon img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+
+.tab-title {
+  font-size: 11px;
+  color: var(--tab-title-color);
+  font-weight: 400;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.2;
+  letter-spacing: -0.1px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.active-tab .tab-title {
+  color: var(--tab-title-active-color);
+  /* font-weight: 500; */
+}
+
+.close-tab-button {
+  background: none;
+  border: none;
+  color: var(--tab-close-button-color);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+  border-radius: 50%;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s ease;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-item:hover .close-tab-button,
+.tab-item.active-tab .close-tab-button {
+  visibility: visible;
+  opacity: 1;
+}
+
+.close-tab-button:hover {
+  background-color: var(--tab-close-button-hover-bg);
+  color: var(--tab-close-button-hover-color);
+}
+
+/* Vstupní pole pro URL v záložce */
+.tab-url-input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    background: #f7fafd;
+    border-radius: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 12px;
+    gap: 6px;
+    flex-direction: row;
+}
+
+.tab-url-input {
+    display: block !important;
+    flex-grow: 1;
+    height: 28px;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1.08em;
+    color: #23272f;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.https-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(207, 213, 223, 0.8);
+    opacity: 0.8;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: rgba(47, 47, 47, 0.5);
+    font-weight: 300;
+    border-radius: 4px;
+    padding: 0 7px;
+    font-size: 10px;
+    letter-spacing: 0.2px;
+    vertical-align: middle;
+    margin-left: -3px !important;
+    user-select: none;
+    height: 18px;
+    border: none;
+    box-shadow: none;
+    transition: background 0.2s;
+    margin: 0;
+}
+
+.https-badge.http-insecure-badge {
+    background: rgba(255, 170, 0, 0.18);
+    color: rgba(184, 92, 0, 0.5);
+    font-size: 10px;
+
+    opacity: 1;
+}
+
+.tab-wide {
+    width: 250px !important;
+    min-width: 250px !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Prázdný prostor mezi taby a akčními tlačítky */
+.titlebar-spacer {
+  flex-grow: 1;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+
+/* Kontejner pro akční tlačítka napravo */
+#action-buttons-container {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Styl pro akční tlačítka (New Tab, Search, Settings) */
+.action-button {
+  background: none;
+  border: none;
+  font-size: 15px;
+  color: var(--action-button-color);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+}
+
+.action-button:hover {
+  background-color: var(--action-button-hover-bg);
+  color: var(--action-button-hover-color);
+}
+
+/* Skrytí tlačítka New Tab v režimu URL input (pokud by se použil) */
+#title-bar.url-input-mode #new-tab-button,
+#title-bar.url-input-mode #search-button,
+#title-bar.url-input-mode #settings-button {
+  display: none;
+}
+
