@@ -1,4 +1,18 @@
+<!--
+[🇬🇧 English](#english) | [🇨🇿 Česky](#česky)
+-->
+
 # 🚀 **Brow** – Modern macOS Browser _(Electron Nightly)_
+
+> 🌐 **Language:**  
+> This README is available in **English** and **Czech**.  
+> _Tento README je dostupný v **angličtině** i **češtině**._
+>
+> Switch language: [🇬🇧 English](#english) | [🇨🇿 Česky](#česky)
+
+---
+
+## 🇬🇧 English
 
 **Brow** is a modern, lightweight web browser built on the latest Electron Nightly for macOS. It delivers a native-like experience, fast startup, and a clean, minimal interface.
 
@@ -36,3 +50,44 @@
 ---
 
 > **Brow** is ideal for users and developers who want a fast, simple, and modern browser experience tailored for macOS, with the flexibility of Electron for future customization and extension.
+
+---
+
+## 🇨🇿 Česky
+
+**Brow** je moderní, lehký webový prohlížeč postavený na nejnovějším Electron Nightly pro macOS. Nabízí nativní zážitek, rychlé spuštění a čisté, minimalistické rozhraní.
+
+---
+
+### ✨ **Hlavní vlastnosti**
+
+- **🗂️ Práce s více panely:** Snadné otevírání, zavírání a správa více panelů s plynulým přepínáním a podporou drag-and-drop.
+- **🏠 Nastavitelná domovská stránka:** Uložte si svou oblíbenou domovskou stránku, která se načte při startu i v nových panelech.
+- **💾 Obnova relace:** Automaticky ukládá a obnovuje poslední otevřené panely po restartu, takže nikdy neztratíte svou relaci.
+- **🧭 Moderní titulní lišta a navigace:** Vlastní titulní lišta s tlačítky zpět, vpřed, obnovení, domů a záložkami. Responzivní rozložení se přizpůsobí velikosti okna.
+- **🌙 Podpora tmavého režimu:** Plynulé přepínání mezi světlým a tmavým motivem pro pohodlné prohlížení kdykoliv.
+- **🛠️ Integrované DevTools:** Okamžitý přístup k Chromium DevTools pro ladění a vývoj.
+- **📚 Historie a záložky:** Vestavěná tlačítka pro historii a správu záložek _(UI připraveno, rozšiřitelné)_.
+- **⚡ Výkon:** Využívá Electron Nightly pro nejnovější vylepšení výkonu a webové standardy.
+- **🍏 Nativní pocit na macOS:** Optimalizováno výhradně pro macOS, včetně nativních okenních ovládacích prvků a hladké integrace se systémem.
+
+---
+
+### 🧑‍💻 **Uživatelský zážitek**
+
+- **Minimalistické rozhraní:** Zaměřeno na obsah, bez rušivých prvků, s intuitivním ovládáním.
+- **Responzivní design:** Přizpůsobí se různým velikostem oken, včetně kompaktního režimu s hamburger menu.
+- **Rychlé vyhledávání:** Okamžité vyhledávání nebo zadání URL přímo z panelu.
+- **Trvalé nastavení:** Všechna uživatelská nastavení a data relace jsou bezpečně uložena v datové složce aplikace.
+
+---
+
+### 🛠️ **Technologie**
+
+- **Electron Nightly:** Vždy aktuální s nejnovějším Chromium a Node.js.
+- **Vlastní správa stavu:** Rychlé, souborové ukládání uživatelských dat a nastavení.
+- **Webové standardy:** Plná podpora moderního HTML5, CSS3 a JavaScriptu.
+
+---
+
+> **Brow** je ideální pro uživatele a vývojáře, kteří chtějí rychlý, jednoduchý a moderní prohlížeč na míru pro macOS, s flexibilitou Electronu pro budoucí úpravy a rozšíření.
