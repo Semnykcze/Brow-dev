@@ -30,6 +30,7 @@
 
 /* ====== Titlebar Container ====== */
 #title-bar {
+  z-index: 20;
   height: 40px;
   background-color: var(--titlebar-background);
   color: var(--titlebar-text-color);
@@ -37,7 +38,8 @@
   align-items: center;
   user-select: none;
   -webkit-app-region: drag;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+/*   box-shadow: 0 1px 3px rgba(0,0,0,0.08); */
+border-bottom: 1px solid #d1d5db;
   padding: 0 12px;
   border-radius: 10px 10px 0 0;
   transition: background-color 0.25s, box-shadow 0.25s;

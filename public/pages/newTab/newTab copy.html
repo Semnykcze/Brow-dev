@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brow – Vylepšené hledání</title>
+    <script src="./lang/cs.js"></script>
+    <script src="./lang/en.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/flag-icon-css@4.1.7/css/flag-icons.min.css" rel="stylesheet" />
+
+    <style>
+      /* ========== Global Variables ========== */
+      :root {
+        /* colors */
+        --bg-color-dark: #121212;
+        --bg-color-light: #ffffff;
+        --input-bg-dark: #1f1f1f;
+        --input-bg-light: #f0f0f0;
+        --input-border-dark: #2e2e2e;
+        --input-border-light: #cccccc;
+        --text-color-dark: #e0e0e0;
+        --text-color-light: #212121;
+        --accent-color: #4285f4;
+        /* Default accent */
+        --hover-bg-dark: #2a2a2a;
+        --hover-bg-light: #e0e0e0;
+        --selected-bg-dark: #333333;
+        --selected-bg-light: #d0d0d0;
+        --placeholder-color-dark: #888;
+        --placeholder-color-light: #666;
+        --secondary-text-dark: #aaa;
+        --secondary-text-light: #555;
+
+        /* sizing */
+        --border-radius: 12px;
+        --button-size: 40px;
+        --toggle-top: 20px;
+        --base-font: 14px;
+        --line-height: 1.5;
+
+        /* transitions */
+        --transition-speed: 0.2s;
+      }
+
+      /* ========== Base Styles & Reset ========== */
+      html {
+        font-size: var(--base-font);
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        line-height: var(--line-height);
+        color: var(--text-color-dark);
+        background-color: var(--bg-color-dark);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-weight: 400;
+        /* Default font weight */
+      }
+
+      /* ========== Theme Overrides ========== */
+      body.time-morning {
+        background-color: #fff8e1;
+        color: var(--text-color-light);
+      }
+
+      body.time-day {
+        background-color: #ffffff;
+        color: var(--text-color-light);
+      }
+
+      body.time-evening {
+        background-color: #ffe0b2;
+        color: var(--text-color-light);
+      }
+
+      body.time-night {
+        background-color: var(--bg-color-dark);
+        color: var(--text-color-dark);
+      }
+
+      body.light-mode {
+        background-color: var(--bg-color-light) !important;
+        color: var(--text-color-light);
+      }
+
+      /* ========== Layout ========== */
+      .main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 16px;
+        margin-top: auto;
+        margin-bottom: auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* ========== Logo Component ========== */
+      .logo {
+        font-size: 56px;
+        font-weight: 700;
+        /* Bolder weight for logo */
+        color: var(--accent-color);
+        margin-bottom: 8px;
+        letter-spacing: -1px;
+        animation: logoFadeIn 0.8s ease-out;
+        transition: transform var(--transition-speed) ease;
+        /* Animation */
+      }
+
+      .logo:hover {
+        transform: scale(1.03);
+        /* Subtle scale on hover */
+      }
+
+      body.light-mode .logo {
+        color: var(--accent-color);
+      }
+
+      .logo-underline {
+        width: 60px;
+        height: 4px;
+        background-color: var(--accent-color);
+        border-radius: 2px;
+        margin-bottom: 32px;
+      }
+
+      @keyframes logoFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* ========== Search Area ========== */
+      .search-area {
+        position: relative;
+        /* Needed for absolute positioning of suggestions */
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* ========== Search Box Component ========== */
+      .search-form {
+        width: 100%;
+        display: flex;
+        /* Make form flex container for engine selector alignment */
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .search-box-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        background: var(--input-bg-dark);
+        border: 1px solid var(--input-border-dark);
+        border-radius: var(--border-radius);
+        padding: 6px 6px 6px 14px;
+        /* Adjust padding for icon button */
+        transition: box-shadow var(--transition-speed) ease, background var(--transition-speed) ease;
+        margin-bottom: 12px;
+        /* Space for suggestions/history */
+      }
+
+      body.light-mode .search-box-container {
+        background: var(--input-bg-light);
+        border-color: var(--input-border-light);
+      }
+
+      .search-box-container:focus-within {
+        box-shadow: 0 0 0 2px var(--accent-color);
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+        color: inherit;
+        font-weight: 500;
+        /* Slightly bolder input text */
+      }
+
+      .search-input::placeholder {
+        color: var(--placeholder-color-dark);
+        font-weight: 400;
+        /* Normal weight for placeholder */
+      }
+
+      body.light-mode .search-input::placeholder {
+        color: var(--placeholder-color-light);
+      }
+
+      .search-button {
+        border: none;
+        background-color: var(--accent-color);
+        color: #fff;
+        /* padding: 8px 16px; */
+        /* Replaced by fixed size */
+        width: 38px;
+        /* Size for icon button */
+        height: 38px;
+        /* Size for icon button */
+        margin-left: 8px;
+        border-radius: calc(var(--border-radius) - 4px);
+        /* Slightly smaller radius */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease,
+          background-color var(--transition-speed) ease;
+      }
+
+      .search-button svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+        /* Use button text color */
+      }
+
+      .search-button:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+        /* Slightly larger scale on hover */
+      }
+
+      .search-button:active {
+        transform: scale(0.95);
+        /* Slightly smaller scale on click */
+      }
+
+      /* ========== Search Suggestions ========== */
+      .suggestions-container {
+       position: static;            /* vloží se do běžného toku dokumentu */
+  width: 100%;                 /* zaplní šířku search-area */
+  /* zachovej ostatní styly, ale smaž top/left/right/margin-top/z-index */
+  background: var(--input-bg-dark);
+  border: 1px solid var(--input-border-dark);
+  border-top: none;            /* napojení na spodní okraj search-boxu */
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;               /* skryto, dokud není vyhledávací dotaz */
+  padding: 4px 0;
+      }
+
+      body.light-mode .suggestions-container {
+        background: var(--input-bg-light);
+        border-color: var(--input-border-light);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .suggestion-item {
+        padding: 8px 14px;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text-color-dark);
+        transition: background-color var(--transition-speed) ease;
+      }
+
+      body.light-mode .suggestion-item {
+        color: var(--text-color-light);
+      }
+
+      .suggestion-item:hover {
+        background-color: var(--hover-bg-dark);
+      }
+
+      body.light-mode .suggestion-item:hover {
+        background-color: var(--hover-bg-light);
+      }
+
+      .suggestion-item.active {
+        /* For potential keyboard navigation */
+        background-color: var(--selected-bg-dark);
+      }
+
+      body.light-mode .suggestion-item.active {
+        background-color: var(--selected-bg-light);
+      }
+
+      /* ========== Search Engine Selector ========== */
+      .engine-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+        /* Space below selector */
+        align-items: center;
+        font-size: 12px;
+        color: var(--secondary-text-dark);
+      }
+
+      body.light-mode .engine-selector {
+        color: var(--secondary-text-light);
+      }
+
+      .engine-selector label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: background-color var(--transition-speed) ease;
+      }
+
+      .engine-selector input[type='radio'] {
+        display: none;
+        /* Hide actual radio button */
+      }
+
+      .engine-selector input[type='radio']:checked + span {
+        font-weight: 600;
+        /* Bolder text for selected */
+        color: var(--accent-color);
+      }
+
+      .engine-selector label:hover {
+        background-color: var(--hover-bg-dark);
+      }
+
+      body.light-mode .engine-selector label:hover {
+        background-color: var(--hover-bg-light);
+      }
+
+      /* ========== Search History ========== */
+      .history-container {
+        width: 100%;
+        max-width: 600px;
+        margin-top: 10px;
+        /* Space above history */
+        font-size: 12px;
+        color: var(--secondary-text-dark);
+        display: none;
+        /* Hidden initially */
+      }
+
+      body.light-mode .history-container {
+        color: var(--secondary-text-light);
+      }
+
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        padding: 0 4px;
+      }
+
+      .history-header span {
+        font-weight: 600;
+      }
+
+      #clearHistoryBtn {
+        background: none;
+        border: none;
+        color: var(--accent-color);
+        cursor: pointer;
+        font-size: 11px;
+        padding: 2px 4px;
+        border-radius: 4px;
+        transition: background-color var(--transition-speed) ease;
+      }
+
+      #clearHistoryBtn:hover {
+        background-color: var(--hover-bg-dark);
+        text-decoration: underline;
+      }
+
+      body.light-mode #clearHistoryBtn:hover {
+        background-color: var(--hover-bg-light);
+      }
+
+      .history-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        /* Allow items to wrap */
+        gap: 8px;
+        /* Spacing between items */
+      }
+
+      .history-item {
+        background-color: var(--input-bg-dark);
+        padding: 4px 10px;
+        border-radius: 12px;
+        /* Pill shape */
+        cursor: pointer;
+        transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        border: 1px solid var(--input-border-dark);
+      }
+
+      body.light-mode .history-item {
+        background-color: var(--input-bg-light);
+        border-color: var(--input-border-light);
+      }
+
+      .history-item:hover {
+        background-color: var(--hover-bg-dark);
+        color: var(--accent-color);
+        /* Highlight text on hover */
+      }
+
+      body.light-mode .history-item:hover {
+        background-color: var(--hover-bg-light);
+      }
+
+      /* ========== Control Buttons (Theme, Accent, Language) ========== */
+      .control-button {
+        position: fixed;
+        top: var(--toggle-top);
+        width: var(--button-size);
+        height: var(--button-size);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--input-bg-dark);
+        border: 1px solid var(--input-border-dark);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease,
+          transform var(--transition-speed) ease;
+        z-index: 10;
+        overflow: hidden;
+      }
+
+      .control-button:hover {
+        transform: scale(1.1);
+        /* Scale effect on hover */
+      }
+
+      body.light-mode .control-button {
+        background: var(--input-bg-light);
+        border-color: var(--input-border-light);
+      }
+
+      /* ── Theme Toggle ── */
+      .theme-toggle {
+        right: var(--toggle-top);
+      }
+
+      body.light-mode .theme-toggle {
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .theme-toggle::before {
+        content: '🌙';
+        font-size: 18px;
+      }
+
+      body.light-mode .theme-toggle::before {
+        content: '☀️';
+      }
+
+      /* ── Accent Color Picker ── */
+      .accent-picker {
+        right: calc(var(--toggle-top) + var(--button-size) + 10px);
+      }
+
+      .accent-picker input[type='color'] {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border-radius: 50%;
+        box-sizing: border-box;
+        padding: 4px;
+      }
+
+      .accent-picker input[type='color']::-webkit-color-swatch-wrapper {
+        padding: 0;
+        border-radius: 50%;
+      }
+
+      .accent-picker input[type='color']::-webkit-color-swatch,
+      .accent-picker input[type='color']::-moz-color-swatch {
+        border: none;
+        border-radius: 50%;
+      }
+
+      /* ========== Language Selector ========== */
+      .language-selector {
+        position: fixed;
+        left: var(--toggle-top);
+        z-index: 11;
+      }
+
+      .control-button.language-toggle-button {
+        right: auto;
+        left: var(--toggle-top);
+      }
+
+      body.light-mode .control-button.language-toggle-button {
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .language-toggle-button .flag-icon {
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        margin: 0;
+        display: block;
+        border-radius: 50%;
+      }
+
+      .language-menu {
+        position: absolute;
+        top: calc(var(--button-size) + 10px);
+        left: 0;
+        width: max-content;
+        min-width: 150px;
+        background: var(--input-bg-dark);
+        border: 1px solid var(--input-border-dark);
+        border-radius: 8px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+        transform-origin: top left;
+        transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, background var(--transition-speed) ease,
+          border-color var(--transition-speed) ease;
+      }
+
+      body.light-mode .language-menu {
+        background: var(--input-bg-light);
+        border-color: var(--input-border-light);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .language-menu.show {
+        pointer-events: auto;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .language-option {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 6px;
+        text-align: left;
+        color: inherit;
+        transition: background-color var(--transition-speed) ease;
+        gap: 10px;
+        font-size: var(--base-font);
+      }
+
+      .language-option .flag-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        flex-shrink: 0;
+        border: 1px solid rgba(128, 128, 128, 0.1);
+      }
+
+      .language-option .lang-name {
+        flex-grow: 1;
+        white-space: nowrap;
+      }
+
+      .language-option:hover {
+        background-color: var(--hover-bg-dark);
+      }
+
+      body.light-mode .language-option:hover {
+        background-color: var(--hover-bg-light);
+      }
+
+      .language-option.selected {
+        background-color: var(--selected-bg-dark);
+        font-weight: 500;
+      }
+
+      body.light-mode .language-option.selected {
+        background-color: var(--selected-bg-light);
+      }
+
+      /* ========== Footer ========== */
+      .footer {
+        padding: 16px 24px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--secondary-text-dark);
+        /* Use secondary color */
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      body.light-mode .footer {
+        color: var(--secondary-text-light);
+      }
+
+      .footer-links {
+        margin-top: 8px;
+        font-size: 12px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .footer-links a {
+        color: inherit;
+        text-decoration: none;
+        margin: 0 8px;
+        flex-shrink: 0;
+        transition: color var(--transition-speed) ease;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+        color: var(--accent-color);
+        /* Highlight on hover */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="language-selector">
+      <button
+        id="languageToggleButton"
+        class="control-button language-toggle-button"
+        aria-label="Změnit jazyk, aktuální jazyk je Čeština"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span id="currentLangFlag" class="flag-icon flag-icon-"></span>
+      </button>
+      <div id="languageMenu" class="language-menu" role="menu">
+        <button class="language-option" data-lang="en" data-flag="gb" onclick="window.setLanguage('en' , 'gb')" role="menuitem">
+          <span class="flag-icon flag-icon-gb"></span>
+          <span class="lang-name">English</span>
+        </button>
+        <button
+          class="language-option selected"
+          data-lang="cs"
+          data-flag="cz"
+          onclick="window.setLanguage('cs', 'cz')"
+          role="menuitem"
+          aria-current="true"
+        >
+          <span class="flag-icon flag-icon-cz"></span>
+          <span class="lang-name">Čeština</span>
+        </button>
+        <button class="language-option" data-lang="de" data-flag="de" onclick="selectLanguage('de','de')" role="menuitem">
+          <span class="flag-icon flag-icon-de"></span>
+          <span class="lang-name">Deutsch</span>
+        </button>
+        <button class="language-option" data-lang="fr" data-flag="fr" onclick="selectLanguage('fr','fr')" role="menuitem">
+          <span class="flag-icon flag-icon-fr"></span>
+          <span class="lang-name">Français</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="control-button theme-toggle" role="button" aria-label="Přepnout na světlé téma" title="Přepnout na světlé téma"></div>
+
+    <main class="main">
+      <div class="logo">Brow</div>
+      <div class="logo-underline"></div>
+
+      <div class="search-area">
+        <form id="searchForm" class="search-form" action="https://www.google.com/search" method="GET">
+          <div class="engine-selector" id="engineSelector">
+            <span id="engineLabel">Vyhledávač:</span>
+            <label>
+              <input type="radio" name="searchEngine" value="google" checked />
+              <span>Google</span>
+            </label>
+            <label>
+              <input type="radio" name="searchEngine" value="duckduckgo" />
+              <span>DuckDuckGo</span>
+            </label>
+            <label>
+              <input type="radio" name="searchEngine" value="seznam" />
+              <span>Seznam</span>
+            </label>
+          </div>
+
+          <div class="search-box-container">
+            <input
+              type="text"
+              class="search-input"
+              id="searchInput"
+              name="q"
+              placeholder="Prohledat web pomocí Brow…"
+              aria-label="Vyhledávací dotaz"
+              autocomplete="off"
+            />
+            <button type="submit" class="search-button" id="searchButton" aria-label="Hledat">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+            </button>
+          </div>
+        </form>
+        <div id="suggestionsContainer" class="suggestions-container"></div>
+
+        <div id="historyContainer" class="history-container">
+          <div class="history-header">
+            <span id="historyTitle">Nedávné hledání</span>
+            <button id="clearHistoryBtn">Vymazat</button>
+          </div>
+          <ul id="historyList" class="history-list"></ul>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p id="footerCopyright">© 2025 Brow Search</p>
+      <div class="footer-links">
+        <a href="#" id="linkAbout">O projektu</a>
+        |
+        <a href="#" id="linkPrivacy">Soukromí</a>
+        |
+        <a href="#" id="linkAdvanced">Pokročilé hledání</a>
+        |
+        <a href="#" id="linkContact">Kontakt</a>
+      </div>
+    </footer>
+
+    <script>
+      let currentLang = null;
+      document.addEventListener('DOMContentLoaded', () => {
+        // výchozí čeština
+
+        // --- Existing Elements ---
+        const body = document.body;
+        const root = document.documentElement;
+        const themeToggleButton = document.querySelector('.theme-toggle');
+
+        const languageToggleButton = document.getElementById('languageToggleButton');
+        const languageMenu = document.getElementById('languageMenu');
+        const currentLanguageFlag = document.getElementById('currentLangFlag');
+        const languageOptions = languageMenu ? languageMenu.querySelectorAll('.language-option') : [];
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton'); // Now the icon button
+        const footerCopyright = document.getElementById('footerCopyright');
+        const linkAbout = document.getElementById('linkAbout');
+        const linkPrivacy = document.getElementById('linkPrivacy');
+        const linkAdvanced = document.getElementById('linkAdvanced');
+        const linkContact = document.getElementById('linkContact');
+
+        // --- New Elements ---
+        const suggestionsContainer = document.getElementById('suggestionsContainer');
+        const engineSelector = document.getElementById('engineSelector');
+        const historyContainer = document.getElementById('historyContainer');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const historyTitle = document.getElementById('historyTitle'); // For translation
+        const engineLabel = document.getElementById('engineLabel'); // For translation
+
+        // ========================================================================
+        // Language Functions
+        // ========================================================================
+        window.setLanguage = function (lang, flagCode) {
+          if (lang == null || lang === '') {
+            return 'Language not set or translation not exists';
+          }
+
+          try {
+            localStorage.setItem('selectedLanguage', lang);
+            localStorage.setItem('selectedFlag', flagCode);
+          } catch (e) {
+            console.warn('LS error saving language');
+          }
+          const langScripts = Array.from(document.querySelectorAll('script[src^="./lang/"]'));
+          let found = false;
+          langScripts.forEach((script) => {
+            const src = script.getAttribute('src');
+            const match = src.match(/\/lang\/([a-zA-Z0-9_-]+)\.js$/);
+            if (match && match[1] === lang) {
+              const varName = `lang_${lang}`;
+              // BUG FIX: window[varName] může být undefined, protože skript ještě není načten.
+              // Oprava: Pokud není window[varName], dynamicky načti skript a po načtení zavolej znovu setLanguage.
+              if (window[varName]) {
+                currentLang = window[varName];
+                refreshUI();
+                found = true;
+              } else {
+                // Dynamické načtení skriptu s jazykem
+                const newScript = document.createElement('script');
+                newScript.src = `./lang/${lang}.js`;
+                newScript.onload = function () {
+                  // Po načtení skriptu nastav jazyk znovu
+                  if (window[varName]) {
+                    currentLang = window[varName];
+                    refreshUI();
+                  }
+                };
+                document.head.appendChild(newScript);
+                found = true;
+              }
+            }
+          });
+          if (!found) {
+            // Pokud nebyl nalezen žádný skript, pokus se dynamicky načíst jazykový skript
+            const varName = `lang_${lang}`;
+            if (!window[varName]) {
+              const newScript = document.createElement('script');
+              newScript.src = `./lang/${lang}.js`;
+              newScript.onload = function () {
+                if (window[varName]) {
+                  currentLang = window[varName];
+                  refreshUI();
+                }
+              };
+              document.head.appendChild(newScript);
+              return;
+            }
+            currentLang = window[varName];
+            refreshUI();
+          }
+
+          function refreshUI() {
+            const storedLang = localStorage.getItem('selectedLanguage');
+            const storedFlag = localStorage.getItem('selectedFlag');
+            // ...existing code...
+            if (!currentLanguageFlag || !currentLang) return;
+            // ...existing code...
+            currentLanguageFlag.className = `flag-icon flag-icon-${storedFlag}`;
+            currentLanguageFlag.title = currentLang.langName;
+
+            languageOptions.forEach((option) => {
+              option.classList.toggle('selected', option.dataset.lang === storedLang);
+              if (option.dataset.lang === storedLang) option.setAttribute('aria-current', 'true');
+              else option.removeAttribute('aria-current');
+            });
+
+            updateUIText(currentLang);
+          }
+
+          updateUIText(currentLang);
+          /* historyTitle.textContent = currentLang.historyTitle;
+        clearHistoryBtn.textContent = currentLang.clearHistory; */
+        };
+        // ========================================================================
+        // Search Engine Configuration
+        // ========================================================================
+        const searchEngines = {
+          google: { url: 'https://www.google.com/search', queryParam: 'q' },
+          duckduckgo: { url: 'https://duckduckgo.com/', queryParam: 'q' },
+          seznam: { url: 'https://search.seznam.cz/', queryParam: 'q' }
+          // Add more engines here
+        };
+
+        // ========================================================================
+        // Suggestion Data Source
+        // ========================================================================
+        const sampleSuggestions = [
+          'počasí Ostrava',
+          'aktuální zprávy',
+          'css flexbox',
+          'javascript tutorial',
+          'html favicon',
+          'recept na palačinky',
+          'program kin Ostrava',
+          'wikipedia',
+          'překladač',
+          'mapy cz'
+        ];
+
+        // ========================================================================
+        // State Variables
+        // ========================================================================
+        let currentSearchHistory = [];
+        let currentEngine = 'google'; // Default
+
+        // ========================================================================
+        // Utility Functions
+        // ========================================================================
+        // Debounce helper to limit function calls
+        function debounce(fn, delay) {
+          let timeoutId;
+          return function(...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, args), delay);
+          };
+        }
+
+        // ========================================================================
+        // UI Text Handling
+        // ========================================================================
+        const updateUIText = (lang) => {
+          const texts = currentLang;
+          if (!texts) return;
+
+          // Standard elements
+          if (searchInput) {
+            searchInput.placeholder = texts.searchPlaceholder;
+            searchInput.setAttribute('aria-label', texts.searchQueryLabel);
+          }
+          if (searchButton) searchButton.setAttribute('aria-label', texts.searchButtonLabel); // Update aria-label for icon button
+          if (footerCopyright) footerCopyright.textContent = texts.footerCopyright;
+          if (linkAbout) linkAbout.textContent = texts.linkAbout;
+          if (linkPrivacy) linkPrivacy.textContent = texts.linkPrivacy;
+          if (linkAdvanced) linkAdvanced.textContent = texts.linkAdvanced;
+          if (linkContact) linkContact.textContent = texts.linkContact;
+          document.documentElement.lang = texts.htmlLang;
+
+          // Control buttons
+          if (themeToggleButton) {
+            const isLight = body.classList.contains('light-mode');
+            const themeAriaLabel = isLight ? texts.toggleThemeToDark : texts.toggleThemeToLight;
+            themeToggleButton.setAttribute('aria-label', themeAriaLabel);
+            themeToggleButton.title = themeAriaLabel;
+          }
+
+          if (languageToggleButton) {
+            languageToggleButton.setAttribute('aria-label', texts.changeLang.replace(texts.langName, texts.langName));
+          }
+
+          // New elements
+          if (historyTitle) historyTitle.textContent = texts.historyTitle;
+          if (clearHistoryBtn) clearHistoryBtn.textContent = texts.clearHistory;
+          if (engineLabel) engineLabel.textContent = texts.engineLabel;
+        };
+
+        // ========================================================================
+        // Theme Application
+        // ========================================================================
+        const applyTheme = (isLight) => {
+          body.classList.remove('time-morning', 'time-day', 'time-evening', 'time-night');
+          if (isLight) {
+            body.classList.add('light-mode');
+          } else {
+            body.classList.remove('light-mode');
+            const currentHour = new Date().getHours();
+            let timeOfDayClass = 'time-night';
+            if (currentHour >= 6 && currentHour < 12) timeOfDayClass = 'time-morning';
+            else if (currentHour >= 12 && currentHour < 18) timeOfDayClass = 'time-day';
+            else if (currentHour >= 18 && currentHour < 21) timeOfDayClass = 'time-evening';
+            // body.classList.add(timeOfDayClass);
+          }
+
+          updateUIText(currentLang); // Update labels after theme change
+        };
+
+        // ========================================================================
+        // Theme Toggle
+        // ========================================================================
+        const toggleTheme = () => {
+          const isCurrentlyLight = body.classList.contains('light-mode');
+          applyTheme(!isCurrentlyLight);
+          try {
+            localStorage.setItem('theme', !isCurrentlyLight ? 'light' : 'dark');
+          } catch (e) {
+            console.warn('LS error saving theme');
+          }
+        };
+
+        // ========================================================================
+        // Accent Color Configuration
+        // ========================================================================
+        const setAccentColor = (color) => {
+          if (color) root.style.setProperty('--accent-color', color);
+        };
+
+        // Toggle Language Menu
+        const toggleLanguageMenu = () => {
+          const isExpanded = languageToggleButton.getAttribute('aria-expanded') === 'true';
+          languageToggleButton.setAttribute('aria-expanded', String(!isExpanded));
+          languageMenu.classList.toggle('show');
+        };
+
+        // --- Select Language ---
+
+        // ========================================================================
+        // Search Suggestions
+        // ========================================================================
+        const updateSuggestions = (query) => {
+          if (!suggestionsContainer) return;
+          // Clear previous suggestions efficiently
+          while (suggestionsContainer.firstChild) {
+            suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+          }
+          if (!query) {
+      suggestionsContainer.style.display = 'none';
+      // pokud je prázdný input, zobraz historii
+      historyContainer.style.display = currentSearchHistory.length ? 'block' : 'none';
+      return;
+    }
+          const filtered = sampleSuggestions.filter((s) => s.toLowerCase().includes(query.toLowerCase()));
+          if (filtered.length > 0) {
+            const fragment = document.createDocumentFragment();
+            filtered.slice(0, 5).forEach((suggestion) => {
+              const item = document.createElement('div');
+              item.classList.add('suggestion-item');
+              item.textContent = suggestion;
+              item.addEventListener('click', () => {
+                searchInput.value = suggestion;
+                suggestionsContainer.style.display = 'none';
+                searchForm.requestSubmit();
+              });
+              fragment.appendChild(item);
+            });
+            suggestionsContainer.appendChild(fragment);
+            suggestionsContainer.style.display = 'block';
+            historyContainer.style.display = 'none'; 
+          } else {
+             suggestionsContainer.style.display = 'none';
+             historyContainer.style.display = currentSearchHistory.length ? 'block' : 'none';
+          }
+        };
+
+        
+        // ========================================================================
+        // Search Engine Operations
+        // ========================================================================
+        const updateSearchEngine = (engineKey) => {
+          if (!searchEngines[engineKey] || !searchForm || !searchInput) return;
+          currentEngine = engineKey;
+          const engineConfig = searchEngines[engineKey];
+          searchForm.action = engineConfig.url;
+          searchInput.name = engineConfig.queryParam; // Update query parameter name
+          try {
+            localStorage.setItem('selectedEngine', engineKey);
+          } catch (e) {
+            console.warn('LS error saving engine');
+          }
+          console.log(`Search engine set to: ${engineKey}`);
+        };
+
+        // ========================================================================
+        // Search History Functions
+        // ========================================================================
+        // Load Search History
+        const loadSearchHistory = () => {
+          try {
+            const storedHistory = localStorage.getItem('searchHistory');
+            currentSearchHistory = storedHistory ? JSON.parse(storedHistory) : [];
+          } catch (e) {
+            console.warn('LS error loading history');
+            currentSearchHistory = [];
+          }
+          renderSearchHistory();
+        };
+
+        // Render Search History
+        const renderSearchHistory = () => {
+          if (!historyList || !historyContainer) return;
+          historyList.innerHTML = ''; // Clear previous items
+          if (currentSearchHistory.length > 0) {
+            currentSearchHistory.forEach((term) => {
+              const li = document.createElement('li');
+              li.classList.add('history-item');
+              li.textContent = term;
+              li.addEventListener('click', () => {
+                searchInput.value = term;
+                searchForm.requestSubmit(); // Submit form
+              });
+              historyList.appendChild(li);
+            });
+            historyContainer.style.display = 'block'; // Show container
+          } else {
+            historyContainer.style.display = 'none'; // Hide if empty
+          }
+        };
+
+        // Add to Search History
+        const addToSearchHistory = (term) => {
+          if (!term || term.trim() === '') return;
+          term = term.trim();
+          // Remove existing instance if present
+          currentSearchHistory = currentSearchHistory.filter((item) => item !== term);
+          // Add to the beginning
+          currentSearchHistory.unshift(term);
+          // Limit history size (e.g., to 10 items)
+          if (currentSearchHistory.length > 10) {
+            currentSearchHistory.pop();
+          }
+          try {
+            localStorage.setItem('searchHistory', JSON.stringify(currentSearchHistory));
+          } catch (e) {
+            console.warn('LS error saving history');
+          }
+          renderSearchHistory(); // Re-render the list
+        };
+
+        // Clear Search History
+        const clearSearchHistory = () => {
+          currentSearchHistory = [];
+          try {
+            localStorage.removeItem('searchHistory');
+          } catch (e) {
+            console.warn('LS error clearing history');
+          }
+          renderSearchHistory(); // Update display
+        };
+
+        // ========================================================================
+        // Initialization & Event Binding
+        // ========================================================================
+
+        // --- 1. Load Preferences & Initial State ---
+        // Theme
+        let savedThemePref = 'dark';
+        try {
+          savedThemePref = localStorage.getItem('theme') || 'dark';
+        } catch (e) {
+          console.warn('LS error reading theme');
+        }
+        applyTheme(savedThemePref === 'light'); // Apply theme first
+
+        // Accent Color
+
+        // Language (Load last, as it triggers updateUIText which needs theme state)
+        let savedLang = null;
+        let savedFlag = null;
+        try {
+          const storedLang = localStorage.getItem('selectedLanguage');
+          const storedFlag = localStorage.getItem('selectedFlag');
+          if (storedLang && storedFlag && storedLang !== 'null' && storedFlag !== 'null') {
+            console.log(`Language loaded from LS: ${storedLang}`);
+            savedLang = storedLang;
+            savedFlag = storedFlag;
+          }
+        } catch (e) {
+          console.warn('LS error reading language');
+        }
+        // Use setTimeout to ensure DOM and styles are ready before updating text
+        setTimeout(() => {
+          window.setLanguage(savedLang, savedFlag);
+          console.log(`Language set to: ${savedLang}`);
+        }, 0);
+
+        // Search Engine
+        let savedEngine = 'google';
+        try {
+          savedEngine = localStorage.getItem('selectedEngine') || 'google';
+        } catch (e) {
+          console.warn('LS error reading engine');
+        }
+        if (engineSelector) {
+          const engineRadio = engineSelector.querySelector(`input[value="${savedEngine}"]`);
+          if (engineRadio) engineRadio.checked = true;
+        }
+        updateSearchEngine(savedEngine); // Apply saved engine settings
+
+        // Search History
+        loadSearchHistory();
+
+        // --- 2. Add Event Listeners ---
+        // Theme Toggle
+        if (themeToggleButton) themeToggleButton.addEventListener('click', toggleTheme);
+
+        // Accent Picker
+
+        // Language Menu Toggle
+        if (languageToggleButton)
+          languageToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleLanguageMenu();
+          });
+
+        // Close menus on outside click
+        document.addEventListener('click', (e) => {
+          // Close language menu
+          if (
+            languageMenu &&
+            languageMenu.classList.contains('show') &&
+            !languageMenu.contains(e.target) &&
+            !languageToggleButton.contains(e.target)
+          ) {
+            toggleLanguageMenu();
+          }
+          // Close suggestions menu
+          if (
+            suggestionsContainer &&
+            suggestionsContainer.style.display === 'block' &&
+            !suggestionsContainer.contains(e.target) &&
+            e.target !== searchInput
+          ) {
+            suggestionsContainer.style.display = 'none';
+          }
+        });
+
+        // Close menus with Escape key
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            if (languageMenu && languageMenu.classList.contains('show')) {
+              toggleLanguageMenu();
+              languageToggleButton.focus();
+            }
+            if (suggestionsContainer && suggestionsContainer.style.display === 'block') {
+              suggestionsContainer.style.display = 'none';
+              searchInput.focus();
+            }
+          }
+        });
+
+        // Search Input (for suggestions)
+        if (searchInput && suggestionsContainer) {
+          searchInput.addEventListener('input', debounce((e) => {
+            updateSuggestions(e.target.value);
+          }, 300));
+          // Hide suggestions on focus out if not clicking a suggestion (handled by document click)
+          // searchInput.addEventListener('blur', () => {
+          //     // Delay hiding slightly to allow clicks on suggestions
+          //     setTimeout(() => {
+          //        if (!suggestionsContainer.contains(document.activeElement)) { // Check if focus moved to a suggestion
+          //            suggestionsContainer.style.display = 'none';
+          //        }
+          //     }, 150);
+          // });
+          searchInput.addEventListener('focus', () => {
+            // Show suggestions again if there's text
+            if (searchInput.value) {
+              updateSuggestions(searchInput.value);
+            }
+            // Show history if input is focused and empty
+            if (!searchInput.value && currentSearchHistory.length > 0) {
+              historyContainer.style.display = 'block';
+            }
+          });
+        }
+
+        // Search Form Submission (for history)
+        if (searchForm && searchInput) {
+          searchForm.addEventListener('submit', (e) => {
+            // e.preventDefault(); // Prevent default only if doing something else first
+            const searchTerm = searchInput.value;
+            addToSearchHistory(searchTerm);
+            if (suggestionsContainer) suggestionsContainer.style.display = 'none'; // Hide suggestions on submit
+            // Allow default form submission to proceed
+          });
+        }
+
+        // Search Engine Selector Change
+        if (engineSelector) {
+          engineSelector.addEventListener('change', (e) => {
+            if (e.target.type === 'radio' && e.target.name === 'searchEngine') {
+              updateSearchEngine(e.target.value);
+            }
+          });
+        }
+
+        // Clear History Button
+        if (clearHistoryBtn) {
+          clearHistoryBtn.addEventListener('click', clearSearchHistory);
+        }
+      });
+    </script>
+  </body>
+</html>

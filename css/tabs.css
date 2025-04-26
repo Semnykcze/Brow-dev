@@ -1,4 +1,10 @@
-/* ====== CSS Variables pro taby ====== */
+/*
+Component / Function: Modern Tab Styles
+Description: Enhances the appearance of browser tabs with modern, glassmorphic effects, improved focus/hover/active states, and better accessibility. Responsive and visually appealing for both light and dark themes.
+Usage: Use with semantic HTML structure for tabbed navigation. Ensure the container uses #tabs-container and each tab uses .tab-item. Place favicon in .tab-favicon, title in .tab-title, and close button in .close-tab-button.
+*/
+
+/* ====== Modern Glassmorphism & Shadow Enhancements ====== */
 :root {
   /* Záložky */
   --tab-background2: #ffffff;            /* čistá bílá */
@@ -27,7 +33,6 @@
   --tab-close-button-hover-color: #60a5fa;
 }
 
-/* ====== Tabs Container ====== */
 #tabs-container {
     display: flex;
     overflow: hidden;
@@ -52,7 +57,6 @@
 #tabs-container.drag-enabled { -webkit-app-region: drag; }
 #tabs-container::-webkit-scrollbar { display: none; }
 
-/* ====== Tab Item ====== */
 .tab-item {
   display: flex;
   align-items: center;
@@ -62,9 +66,9 @@
   max-width: 220px;
   height: 28px;
   margin-top: 6px;
-  background-color: var(--tab-background2);
-  backdrop-filter: blur(6.9px);
-  -webkit-backdrop-filter: blur(6.9px);
+  background: linear-gradient(120deg, var(--tab-background2) 80%, rgba(255,255,255,0.15) 100%);
+  box-shadow: 0 1px 4px rgba(30,64,175,0.06), 0 1.5px 1px rgba(0,0,0,0.14);
+  border: 1.5px solid rgba(30,64,175,0.07);
   border-radius: 8px;
   cursor: pointer;
   overflow: hidden;
@@ -75,11 +79,10 @@
               max-width 0.35s cubic-bezier(0.4,0,0.2,1),
               min-width 0.35s cubic-bezier(0.4,0,0.2,1),
               margin 0.35s cubic-bezier(0.4,0,0.2,1),
-              background-color 0.25s;
+              background 0.25s cubic-bezier(0.4,0,0.2,1);
   position: relative;
   -webkit-app-region: no-drag;
   z-index: 1;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .tab-favicon,
@@ -90,7 +93,18 @@
   z-index: 1;
 }
 
-.tab-item:hover { background-color: var(--tab-hover-background); }
+.tab-item:focus-visible {
+  outline: 2.5px solid var(--tab-title-active-color);
+  outline-offset: 1.5px;
+  z-index: 3;
+}
+
+.tab-item:hover {
+  background-color: var(--tab-hover-background);
+  box-shadow: 0 4px 12px rgba(30,64,175,0.13), 0 2px 8px rgba(0,0,0,0.07);
+  border: 1.5px solid var(--tab-title-active-color);
+}
+
 .tab-item.tab-drag-over {
   background-color: rgba(200,220,250,0.7);
   border-left: 2px solid #4285f4;
@@ -105,11 +119,12 @@
 }
 
 .tab-item.active-tab {
-  background-color: var(--tab-active-background2);
+  background: linear-gradient(120deg, var(--tab-active-background2) 80%, rgba(96,165,250,0.13) 100%);
+ /*  box-shadow: 0 4px 16px rgba(30,64,175,0.10), 0 2px 8px rgba(0,0,0,0.06); */
+  border: 0.5px solid rgb(30, 64, 175);
   height: 28px;
   margin-top: 6px;
   z-index: 2;
-  border-bottom: none;
 }
 
 .tab-item.active-tab::after { display: none; }
@@ -122,7 +137,9 @@
   opacity: 0.9;
   border-radius: 4px;
   padding: 2px;
-  background-color: var(--tab-favicon-background);
+  background: linear-gradient(120deg, var(--tab-favicon-background) 80%, rgba(255,255,255,0.13) 100%);
+  box-shadow: 0 1px 4px rgba(30,64,175,0.08);
+  border: 1px solid rgba(30,64,175,0.07);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,7 +147,9 @@
 
 .active-tab .tab-favicon {
   opacity: 1;
-  background-color: var(--tab-favicon-active-background);
+  background: linear-gradient(120deg, var(--tab-favicon-active-background) 80%, rgba(96,165,250,0.10) 100%);
+  box-shadow: 0 2px 8px rgba(30,64,175,0.13);
+  border: 1px solid var(--tab-title-active-color);
 }
 
 /* Předpokládáme, že uvnitř .tab-favicon je <img> tag */
@@ -164,16 +183,16 @@
   background: none;
   border: none;
   color: var(--tab-close-button-color);
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   padding: 0;
   margin-left: 8px;
   border-radius: 50%;
   visibility: hidden;
   opacity: 0;
-  transition: all 0.2s ease;
-  width: 18px;
-  height: 18px;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,9 +204,19 @@
   opacity: 1;
 }
 
+.close-tab-button:focus-visible {
+  outline: 2px solid var(--tab-close-button-hover-color);
+  outline-offset: 1.5px;
+  background: var(--tab-close-button-hover-bg);
+  color: var(--tab-close-button-hover-color);
+  border: 1px solid var(--tab-close-button-hover-color);
+}
+
 .close-tab-button:hover {
   background-color: var(--tab-close-button-hover-bg);
   color: var(--tab-close-button-hover-color);
+  box-shadow: 0 2px 8px rgba(30,64,175,0.13);
+  border: 1px solid var(--tab-close-button-hover-color);
 }
 
 /* Vstupní pole pro URL v záložce */
@@ -225,8 +254,8 @@
     padding: 0;
     margin: 0;
     background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
 }
 
 .https-badge {
@@ -235,8 +264,8 @@
     justify-content: center;
     background: rgba(207, 213, 223, 0.8);
     opacity: 0.8;
-    backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
     color: rgba(47, 47, 47, 0.5);
     font-weight: 300;
     border-radius: 4px;

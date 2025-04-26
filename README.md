@@ -1,6 +1,41 @@
+<!-- Logo (pokud je k dispozici) -->
+<p align="center">
+  <img src="assets/brow.png" alt="Brow logo" width="120" />
+</p>
+
 # 🚀 **Brow** – Modern macOS Browser _(Electron Nightly)_
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-macOS-lightgrey?logo=apple" alt="Platform">
+  <img src="https://img.shields.io/badge/Build-Electron_Nightly-blueviolet?logo=electron" alt="Electron Nightly">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
+
+> 🌐 **Language:** This README is available in **English**.  
+> Switch language: [🇬🇧 English](#english)
+
+---
+
+## ✨ Quick Overview
+
+|                        |                       |
+| ---------------------- | --------------------- |
+| 🗂️ Multi-Tab           | 🍏 macOS Native       |
+| 🏠 Custom Homepage     | 🌙 Dark Mode          |
+| 💾 Session Restore     | 🛠️ DevTools           |
+| 📚 Bookmarks & History | ⚡ Fast & Lightweight |
+
+---
+
+## 🇬🇧 English
+
 **Brow** is a modern, lightweight web browser built on the latest Electron Nightly for macOS. It delivers a native-like experience, fast startup, and a clean, minimal interface.
+
+Brow is designed for users who value simplicity, speed, and a distraction-free browsing environment. Unlike mainstream browsers, Brow focuses on providing only the essential features, ensuring that your content always takes center stage. Its architecture leverages the cutting-edge Chromium engine via Electron Nightly, guaranteeing compatibility with the latest web standards and technologies.
+
+Brow is ideal for developers, power users, and anyone seeking a customizable, privacy-respecting browser that feels at home on macOS. The app is engineered for extensibility, allowing future enhancements such as plugin support, advanced privacy controls, and deep system integration. All user data is stored locally, giving you full control over your browsing history, bookmarks, and settings.
+
+Whether you need a fast secondary browser for development, a minimal workspace for focused research, or a customizable platform for building your own browser features, Brow is the perfect starting point.
 
 ---
 
@@ -32,6 +67,19 @@
 - **Electron Nightly:** Always up-to-date with the latest Chromium and Node.js features.
 - **Custom State Management:** Fast, file-based storage for user data and settings.
 - **Web Standards:** Full support for modern HTML5, CSS3, and JavaScript.
+
+---
+
+## 🚦 **Philosophy & Extensibility**
+
+Brow is built with a "less is more" philosophy, stripping away unnecessary clutter and focusing on what matters most: your browsing experience. The codebase is modular and well-documented, making it easy for developers to contribute, fork, or extend the browser for their own needs.
+
+**Planned features include:**
+
+- Plugin and extension support
+- Advanced privacy and security controls
+- Enhanced bookmark and history management
+- Deeper macOS integration (e.g., Touch Bar, Handoff, native notifications)
 
 ---
 

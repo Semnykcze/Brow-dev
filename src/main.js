@@ -2,14 +2,18 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const utils_path = require('../js/utils.js');
 const store = require('../js/store.js');
+const appConfig = require('./appConfig.js');
 const { ipcMain } = require('electron');
+
 require('./app/ipc.js');
 
 let mainWindow;
 
+
+
 function createWindow() {
   // Načti poslední velikost okna, pokud existuje
-  const lastSize = store.getValue('windowSize', { width: 800, height: 600 });
+  const lastSize = store.getValue('windowSize', { width: appConfig.window.width, height: appConfig.window.height });
   mainWindow = new BrowserWindow({
     width: lastSize.width,
     height: lastSize.height,
@@ -20,13 +24,15 @@ function createWindow() {
         contextIsolation: false,
         enableRemoteModule: true,
         webviewTag: true,
-        preload: utils_path.SRC_PATH() + 'preload.js',
+        preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true
     }
   });
   mainWindow.loadFile(utils_path.PUBLIC_PATH() + 'index.html');
 
   mainWindow.webContents.openDevTools({ mode: 'detach' });
+
+store.initStore();
 
   // Ulož velikost okna při změně
   mainWindow.on('resize', () => {

@@ -1,6 +1,7 @@
 // DEFINES 
 
-const { ipcRenderer, remote } = require('electron');
+const { ipcRenderer } = require('electron');
+const keytar = require('keytar');
 
 // Spusť kontrolu po načtení DOM
 
@@ -83,15 +84,16 @@ window.addEventListener('beforeunload', async () => {
     }
 });
 
-// Po načtení stránky zkontroluj, zda jsou uložené poslední taby
-async function askRestoreTabs() {
+async function restoreTabs() {
+   
     const lastOpened = await ipcRenderer.invoke('store-get', 'lastOpened', []);
-    if (lastOpened && lastOpened.length > 0) {
-        const response = confirm('Chcete obnovit poslední otevřené taby?');
-        window.canLastOpen = !!response;
-        if (window.canLastOpen) {
+     if (lastOpened && lastOpened.length > 0) {
+        window.canLastOpen = window.canLastOpen || true;
+
+        if (window.canLastOpen)
+        {
             // Otevři pouze uložené taby z appdata
-            if (typeof createTab === 'function') {
+               if (typeof createTab === 'function') {
                 // Nejprve smaž všechny existující taby (pokud nějaké jsou)
                 const allTabs = document.querySelectorAll('.tab-item');
                 allTabs.forEach(tab => tab.remove());
@@ -102,17 +104,21 @@ async function askRestoreTabs() {
                     await createTab(url);
                 }
             }
-        } else {
+        }
+        else
+        {
             // Pokud uživatel nechce obnovit, smaž uložené taby
             await ipcRenderer.invoke('store-remove', 'lastOpened');
         }
-    } else {
+
+     } else {
         window.canLastOpen = false;
-    }
+     }
+
 }
 
+
 document.addEventListener('DOMContentLoaded', async () => {
-     await askRestoreTabs();
     await waitSecond(100);
     // OPRAVA: vytvoř výchozí tab pouze pokud žádný neexistuje
     if (!window.canLastOpen && document.querySelectorAll('.tab-item').length === 0) {
@@ -161,7 +167,11 @@ function showHamburgerMenu() {
         };
         document.getElementById('menu-history').onclick = () => {
             if (ELEMENT.history_btn) ELEMENT.history_btn.click();
-            hideHamburgerMenu();
+                window.dialogManager.openDialog('confirm', { message: 'Are you sure?' });
+                console.log('History button clicked');
+           
+
+
         };
         document.getElementById('menu-settings').onclick = () => {
             if (ELEMENT.settings_btn) ELEMENT.settings_btn.click();
@@ -268,6 +278,10 @@ function initElements() {
     }
     );
 
+    ELEMENT.history_btn.addEventListener('click', () => {
+    
+    });
+
     ELEMENT.webview.addEventListener('did-navigate-in-page', () => {
         can_go_back = ELEMENT.webview.canGoBack();
         can_go_forward = ELEMENT.webview.canGoForward();
@@ -322,6 +336,8 @@ function getOriginalBg(element) {
     return window.getComputedStyle(element).backgroundColor || '#222';
 }
 
+
+
 // dynamic animation for action buttons
 function slideOutRight(element, callback) {
     const origBg = getOriginalBg(element);
@@ -341,6 +357,31 @@ function slideOutRight(element, callback) {
         if (callback) callback();
     }, 400);
 }
+
+
+async function fillFromKeytar() {
+    const service = 'myapp';
+    // Najde první input typu email
+    const emailInput = document.querySelector('input[type=email]');
+    if (!emailInput) {
+        console.warn('Nebyl nalezen input typu email.');
+        return;
+    }
+    console.log('Nalezen input typu email:', emailInput);
+    const account = emailInput.value;
+    // Ověření existence window.keychain a jeho metody getPassword
+    if (!window.keychain || typeof window.keychain.getPassword !== 'function') {
+        console.warn('window.keychain.getPassword není dostupné.');
+        return;
+    }
+    const password = await window.keychain.getPassword(service, account);
+    if (password) {
+        const pwdInput = document.querySelector('input[type=password]');
+        if (pwdInput) pwdInput.value = password;
+    }
+}
+
+
 
 function slideInRight(element) {
     const origBg = getOriginalBg(element);
@@ -400,6 +441,11 @@ function updateActionButtonsVisibility() {
 
 
 window.addEventListener('DOMContentLoaded',updateActionButtonsVisibility);
+window.addEventListener('DOMContentLoaded',async () => {
+    await fillFromKeytar();
+   
+});
+
 window.addEventListener('resize', updateActionButtonsVisibility);
 
 
@@ -412,3 +458,12 @@ waitSecond(100).then(() => {
     }
 });
 
+module.exports = {
+    ELEMENT,
+    updateNavButtonsState,
+    restoreTabs,
+    getAllTabsUrls,
+    validateUrl,
+    showHamburgerMenu,
+    hideHamburgerMenu
+};

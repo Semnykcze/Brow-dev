@@ -5,6 +5,46 @@ const path = require('path');
 const STORE_FILE = path.join(app.getPath('userData'), 'appdata.json');
 let store = {};
 
+
+let SEARCH_ENGINES = {
+    google: "https://www.google.com/search?q=%s",
+    duckduckgo: "https://duckduckgo.com/?q=%s",
+    bing: "https://www.bing.com/search?q=%s",
+}
+
+
+let DEFAULT_STORE = {
+    theme: 'light',
+    lang: "en",
+    homepage: "https://www.google.com",
+    searchEngine: SEARCH_ENGINES.google,
+    windowSize: {
+        width: 800,
+        height: 600
+    },
+    allowRestore: true,
+};
+
+
+
+function initStore() {
+    console.log('Initializing store...');
+    // Inicializace store s výchozími hodnotami
+    if (!fs.existsSync(STORE_FILE)) {
+        fs.writeFileSync(STORE_FILE, JSON.stringify(DEFAULT_STORE, null, 2), 'utf-8');
+        console.log('Store initialized with default values:', DEFAULT_STORE);
+    } else {
+        console.log('Store already exists, no need to initialize.');
+    }
+    // Načti aktuální store
+    for (const key in DEFAULT_STORE) {
+        if (!store.hasOwnProperty(key)) {
+            store[key] = DEFAULT_STORE[key];
+        }
+    }
+}
+
+
 function loadStore() {
     try {
         if (fs.existsSync(STORE_FILE)) {
@@ -61,7 +101,8 @@ module.exports = {
     loadStore,
     removeValue,
     isExists,
-    STORE_FILE
+    STORE_FILE,
+    initStore
 };
 
 
