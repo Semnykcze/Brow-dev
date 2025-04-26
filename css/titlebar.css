@@ -123,3 +123,77 @@ border-bottom: 1px solid #d1d5db;
     /* Volitelné: jemný padding pro lepší efekt */
     padding: 2px 6px;
 }
+
+#title-bar.compact-titlebar {
+  height: 28px !important;
+  min-height: 28px;
+  padding: 0 4px !important;
+  background: #181c22 !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid #23272f !important;
+  font-size: 13px !important;
+}
+
+#title-bar.compact-titlebar #navigation-container,
+#title-bar.compact-titlebar #action-buttons-container,
+#title-bar.compact-titlebar #tabs-container {
+  height: 100%;
+  min-height: 0;
+}
+
+#title-bar.compact-titlebar .nav-button,
+#title-bar.compact-titlebar .action-button {
+  width: 22px;
+  height: 22px;
+  font-size: 13px;
+  margin: 0 2px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #b6c2d6;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+#title-bar.compact-titlebar .nav-button:hover,
+#title-bar.compact-titlebar .action-button:hover {
+  background: #23293a;
+  color: #60a5fa;
+}
+
+#title-bar.compact-titlebar .titlebar-spacer {
+  height: 100%;
+}
+
+#title-bar.compact-titlebar #tabs-container {
+  min-height: 0;
+  padding: 0 2px;
+}
+
+#title-bar.compact-titlebar .tab-item {
+  min-height: 22px !important;
+  height: 22px !important;
+  font-size: 12px !important;
+  margin: 0 1px !important;
+  border-radius: 4px !important;
+  padding: 0 6px !important;
+}
+
+#title-bar.compact-titlebar .tab-favicon img {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+#title-bar.compact-titlebar .tab-title {
+  font-size: 12px !important;
+  padding: 0 2px !important;
+}
+
+#title-bar.compact-titlebar #hamburger-menu {
+  width: 22px;
+  height: 22px;
+  font-size: 13px;
+  margin: 0 2px;
+}

@@ -22,7 +22,7 @@ let DEFAULT_STORE = {
         width: 800,
         height: 600
     },
-    allowRestore: true,
+    allowRestore: true 
 };
 
 
@@ -30,11 +30,14 @@ let DEFAULT_STORE = {
 function initStore() {
     console.log('Initializing store...');
     // Inicializace store s výchozími hodnotami
-    if (!fs.existsSync(STORE_FILE)) {
+    if (
+        !fs.existsSync(STORE_FILE) ||
+        (fs.existsSync(STORE_FILE) && fs.statSync(STORE_FILE).size === 0)
+    ) {
         fs.writeFileSync(STORE_FILE, JSON.stringify(DEFAULT_STORE, null, 2), 'utf-8');
         console.log('Store initialized with default values:', DEFAULT_STORE);
     } else {
-        console.log('Store already exists, no need to initialize.');
+        console.log('Store already exists and is not empty, no need to initialize.');
     }
     // Načti aktuální store
     for (const key in DEFAULT_STORE) {
@@ -50,6 +53,11 @@ function loadStore() {
         if (fs.existsSync(STORE_FILE)) {
             const data = fs.readFileSync(STORE_FILE, 'utf-8');
             store = JSON.parse(data);
+
+            // Oprava: allowRestore = false pokud lastOpened neexistuje nebo je prázdné pole
+            if (!Array.isArray(store.lastOpened) || store.lastOpened.length === 0) {
+                store.allowRestore = false;
+            }
             console.log('Store loaded:', store);
         }
     } catch (e) {
@@ -59,6 +67,10 @@ function loadStore() {
 }
 
 function saveStore() {
+    // Oprava: allowRestore = false pokud lastOpened neexistuje nebo je prázdné pole
+    if (!Array.isArray(store.lastOpened) || store.lastOpened.length === 0) {
+        store.allowRestore = false;
+    }
     try {
         fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2), 'utf-8');
     } catch (e) {
@@ -70,6 +82,14 @@ function setValue(key, value) {
     // Před uložením vždy načti aktuální data ze souboru, aby nedošlo k přepsání ostatních hodnot
     loadStore();
     store[key] = value;
+    // Oprava: allowRestore = false pokud lastOpened neexistuje nebo je prázdné pole
+    if (key === 'lastOpened') {
+        if (!Array.isArray(value) || value.length === 0) {
+            store.allowRestore = false;
+        } else {
+            store.allowRestore = true;
+        }
+    }
     saveStore();
 }
 
